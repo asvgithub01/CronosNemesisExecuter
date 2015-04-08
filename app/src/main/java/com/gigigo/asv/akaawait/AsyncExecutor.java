@@ -13,7 +13,6 @@ import android.os.AsyncTask;
 public class AsyncExecutor<T> extends AsyncTask<Void, Void, T> {
     ActionASV action2Execute;
     T stickyReturnValue; //asv el recopetin seria tenerlo con un manager
-    // public InputMethodSession.EventCallback onFinish;
     public Event4Raise<T> MyOwnEvent4RaiseIT;
 
 

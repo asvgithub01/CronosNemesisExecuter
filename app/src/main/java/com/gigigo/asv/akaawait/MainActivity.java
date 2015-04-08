@@ -3,8 +3,6 @@ package com.gigigo.asv.akaawait;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.inputmethod.InputMethodSession;
 import android.widget.Toast;
 
@@ -13,25 +11,30 @@ public class MainActivity extends ActionBarActivity {
 
     ProgressDialog dialog;
 
+    AsyncTaskManagerExecutor myManager;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        String str = java.lang.reflect.Method.class.getCanonicalName();
 
-      //  BackgroundExecutorSample();
+        Soyunmetodogilipollesquer();
+        //  BackgroundExecutorSample();
         //region MOVIDA QUE DEBE ACCEDER AL HILO UI NO CAMBIA
         dialog = ProgressDialog.show(this, "", "LoadingDialog ASYNC EXECUTOR", true);
         dialog.show();
         //endregion
 
-        //Region AsyncExecutor
-        new AsyncExecutor<ActionASV>().Execute(new ActionASV(15)).MyOwnEvent4RaiseIT= (new Event4Raise() {
+        myManager= new AsyncTaskManagerExecutor(this.getApplicationContext());//asv todo esto no deberia ser asine, el manager deberia ser satic, xo necesita el contxt pa llamar al servicio
+        myManager.Execute((Action)(new ActionASV(15))).MyOwnEvent4RaiseIT = (new Event4Raise() {
             @Override
             public void onEvent(Object ta) {
                 dialog.dismiss();
                 dialog = null;
-                Toast.makeText(getApplicationContext(),"onEvent",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "onEvent", Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -41,29 +44,65 @@ public class MainActivity extends ActionBarActivity {
 
             @Override
             public void onError(Object ta) {
-                Toast.makeText(getApplicationContext(),"onError",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "onError", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onPreXeChute(Object tas) {
-                Toast.makeText(getApplicationContext(),"onPreXeChute",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "onPreXeChute", Toast.LENGTH_LONG).show();
             }
         });
-        //endregion
-
+        //LastAsyncExecutorSample();
         //AsyncExecutorSample();
 
     }
 
+    private void LastAsyncExecutorSample()
+    {
+        //  BackgroundExecutorSample();
+        //region MOVIDA QUE DEBE ACCEDER AL HILO UI NO CAMBIA
+        dialog = ProgressDialog.show(this, "", "LoadingDialog ASYNC EXECUTOR", true);
+        dialog.show();
+        //endregion
+
+        //Region AsyncExecutor
+        new AsyncExecutor<ActionASV>().Execute((new ActionASV(15))).MyOwnEvent4RaiseIT = (new Event4Raise() {
+            @Override
+            public void onEvent(Object ta) {
+                dialog.dismiss();
+                dialog = null;
+                Toast.makeText(getApplicationContext(), "onEvent", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFail(Object ta) {
+                Toast.makeText(getApplicationContext(), "onFail", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onError(Object ta) {
+                Toast.makeText(getApplicationContext(), "onError", Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onPreXeChute(Object tas) {
+                Toast.makeText(getApplicationContext(), "onPreXeChute", Toast.LENGTH_LONG).show();
+            }
+        });
+        //endregion
+    }
     private void AsyncExecutorSample() {
-
-
 
 
     }
 
+    private void Soyunmetodogilipollesquer() {
+        String str = myManager.getMyInvoker();
+        Toast.makeText(this, str, Toast.LENGTH_LONG).show();
+    }
+
     private void BackgroundExecutorSample() {
-/*
+/**/
         //region MOVIDA QUE DEBE ACCEDER AL HILO UI
         dialog = ProgressDialog.show(this, "", "LoadingDialog", true);
         dialog.show();
@@ -87,7 +126,7 @@ public class MainActivity extends ActionBarActivity {
         ActionASV actionASV = new ActionASV(20);
         //endregion
 
-       //region lanzamos la ejecucion de la tarea
+        //region lanzamos la ejecucion de la tarea
         T1000.Execute(actionASV);
 
         //endregion
@@ -109,27 +148,5 @@ public class MainActivity extends ActionBarActivity {
 //endregion
     }
 
-    //region mierdacaajena
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-    //endregion
 }

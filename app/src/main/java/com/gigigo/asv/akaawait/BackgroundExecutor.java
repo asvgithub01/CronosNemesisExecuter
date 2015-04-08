@@ -31,10 +31,8 @@ public class BackgroundExecutor extends AsyncTask<Void, Void, String> {
     // otto(bus)
 
     public BackgroundExecutor Execute(ActionASV act) {
-
         actionASV = act;
         this.execute();
-
         return this;
     }
 
