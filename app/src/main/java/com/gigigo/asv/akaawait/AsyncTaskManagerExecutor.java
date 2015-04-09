@@ -16,18 +16,19 @@ public class AsyncTaskManagerExecutor {
     //se puede ahcer en el Execute un for previo en plan recorre las tareas y las finitas(sin el sticky) te las calzas
     //o hacerlo explicitamente tras el onfinish de la tarea en la propia activity, a gusto del consumidor
 
+    //todo ejemplo wai pa meterle DI
     public AsyncTaskManagerExecutor(Context context) {
         mContext = context;
     }
 
-    public static AsyncTaskObjectModel Execute(Action act) {
+    public AsyncTaskObjectModel Execute(Action act) {
 
-        //buscamos en la coleccion  getMyInvoker();, si existe no hacemos nada y llamamos al servicio(es el servicio el que dispara el onevent)
+        //buscamos en la coleccion  getMyInvoker();, si existe no hacemos nada y llamamos al servicio(es el servicio el que propaga con el fire del onevent)
         //si no existe creamos el new AsyncTaskObjectModel y llamamos al servicio con un intent(y es el servicio el que hace el execute)
 
-//asv mierda fuck y fock, aki el getmyInvoker no me devuelve la linea del mainactivity coomo io quiero
+        //asv mierda fuck y fock, aki el getmyInvoker no me devuelve la linea del mainactivity coomo io quiero
         //hay q pasar del 2º tb
-        String Task_Key_Name = getMyInvoker();
+        String Task_Key_Name = getMyInvoker(2);
         AsyncTaskObjectModel newAsyncTask = getTaskIfExistInCollection(Task_Key_Name);
 
         //Intent intent = new Intent(mContext, MyExecutorService.class);
@@ -46,12 +47,9 @@ public class AsyncTaskManagerExecutor {
             //solo llamar al servicio con el name xo sin añadir de nuevo la tarea a la lista
         }
         mContext.startService(intent);
-
-
         //mContext.bindService(intent,null,Context.BIND_IMPORTANT);
         return newAsyncTask;
     }
-
 
     public static AsyncTaskObjectModel getTaskIfExistInCollection(String TaskKeyName) {
         AsyncTaskObjectModel resultTask = null;
@@ -71,28 +69,50 @@ public class AsyncTaskManagerExecutor {
     }
 
     public static void RemoveTaskFromCollection(AsyncTaskObjectModel Task4Remove) {
+        //todo java Garbage collector o similar? o de esta forma ya elimina bien la tarea de memoria?
         AllTasks.remove(Task4Remove);
     }
 
-    public static String getMyInvoker() {
+    public static String getMyTaskKeyName() {
+        return getMyInvoker(0);
+    }
+
+    public static String getMyTaskKeyName(int stepsBack) {
+        return getMyInvoker(0);
+    }
+
+    private static String getMyInvoker() {
+        return getMyInvoker(0);
+    }
+
+    /**
+     * @param stepsBack es cuantas trazas hacia atras está la traza que buscamos obtener(depende de dnd tenemos la llamada al getInvoker
+     * @return por defecto devuelve NiFUCKINGIdeaMan ^_^, el default value mola xo la variable más ;)
+     */
+    private static String getMyInvoker(int stepsBack) {
         String invokerGüeno = "NiFUCKINGIdeaMan";
         boolean isTheNextOneTheFuckingInvoker = false;
-        // String whoAmI = this.getClass().name;
 
-        String thisClassName = "com.gigigo.asv.akaawait.AsyncTaskManagerExecutor";//asv esta fuckin mierda es al ser statico//this.getClass().getName(); //asv esto es el namespace+.nombreclase q la contiene
-        Thread thread = Thread.currentThread(); //asv hay mas hilos q delitos de corrupcion tie el pp...
-        //  Map<Thread, StackTraceElement[]> allTraces = Thread.getAllStackTraces();//todo asv  muy bonito, muy bonito, chorromil hilos...problema para el asv del futuro
+
+        String whoAmI = AsyncTaskManagerExecutor.class.getName();//es equivalente a poner en harcoded--> "com.gigigo.asv.akaawait.AsyncTaskManagerExecutor";
+
+        Thread thread = Thread.currentThread(); //asv hay mas hilos q delitos de corrupcion tiene el pp...
+        //Map<Thread, StackTraceElement[]> allTraces = Thread.getAllStackTraces();
+        //todo asv  muy bonito, muy bonito, chorromil hilos...problema para el asv del futuro
 
         StackTraceElement[] tracesArray = thread.getStackTrace();
-
+        int i = 0;
         //asv atiende, recorremos el array hasta encotrar la primera coincidencia con esta clase(provocada por la llamada al propio getMyInvoker();
-        // y el siguiente item del array de la traza es nuestro invoker
+        // y el siguiente item del array de la traza es nuestro invoker, aunk si tenemos el getinvoker como en este caso embebido dentro de la clase del manager
+        //el invoker q nos interesa es el que produjo la llamada al manager, por eso la truchilla del stepsBack
         for (StackTraceElement stackTrace : tracesArray) {
             if (isTheNextOneTheFuckingInvoker) {
+                if (i >= stepsBack) //asv astucia supiner
+                    break;
+                i++;
                 invokerGüeno = stackTrace.toString();
-                break;
             }
-            if (stackTrace.getClassName().equals(thisClassName))
+            if (stackTrace.getClassName().equals(whoAmI))
                 isTheNextOneTheFuckingInvoker = true;
         }
         return invokerGüeno;

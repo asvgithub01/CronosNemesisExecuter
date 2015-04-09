@@ -4,6 +4,9 @@ import java.util.Random;
 
 /**
  * Created by Alberto on 12/03/2015.
+ * esto es un runnable un iterator un command o un Action como te salga del pie denominarlo,
+ * en resumen es una clase q tiene un metodo que realiza una funcionalidad especifica y reutilizable
+ * tb quiere daggerMambito
  */
 public class ActionASV implements Action<String> {
     int topeEscalope = 0; //asv asi le podemos poner un limite del carallo la vela y q tarde la leche
@@ -35,6 +38,5 @@ public class ActionASV implements Action<String> {
 
         return Result;
     }
-
 
 }

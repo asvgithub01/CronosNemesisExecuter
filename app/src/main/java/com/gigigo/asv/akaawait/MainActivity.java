@@ -19,17 +19,19 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String str = java.lang.reflect.Method.class.getCanonicalName();
-
-        Soyunmetodogilipollesquer();
-        //  BackgroundExecutorSample();
         //region MOVIDA QUE DEBE ACCEDER AL HILO UI NO CAMBIA
         dialog = ProgressDialog.show(this, "", "LoadingDialog ASYNC EXECUTOR", true);
         dialog.show();
         //endregion
 
-        myManager= new AsyncTaskManagerExecutor(this.getApplicationContext());//asv todo esto no deberia ser asine, el manager deberia ser satic, xo necesita el contxt pa llamar al servicio
-        myManager.Execute((Action)(new ActionASV(15))).MyOwnEvent4RaiseIT = (new Event4Raise() {
+        //region Llamadas al resto de Implementaciones del Asyncroneo fino ;)
+        //BackgroundExecutorSample();
+        //LastAsyncExecutorSample();
+        //endregion
+
+        //region Ejecucion de un proceso asincrono + programación secuencial con Manager + Service +Sticky Values
+        myManager = new AsyncTaskManagerExecutor(this.getApplicationContext());//asv todo esto no deberia ser asine, el manager deberia ser satic, xo necesita el contxt pa llamar al servicio
+        myManager.Execute((Action) (new ActionASV(15))).MyOwnEvent4RaiseIT = (new Event4Raise() {
             @Override
             public void onEvent(Object ta) {
                 dialog.dismiss();
@@ -47,25 +49,16 @@ public class MainActivity extends ActionBarActivity {
                 Toast.makeText(getApplicationContext(), "onError", Toast.LENGTH_LONG).show();
             }
 
-            @Override
-            public void onPreXeChute(Object tas) {
-                Toast.makeText(getApplicationContext(), "onPreXeChute", Toast.LENGTH_LONG).show();
-            }
         });
-        //LastAsyncExecutorSample();
-        //AsyncExecutorSample();
+        //endregion
 
     }
 
-    private void LastAsyncExecutorSample()
-    {
-        //  BackgroundExecutorSample();
-        //region MOVIDA QUE DEBE ACCEDER AL HILO UI NO CAMBIA
-        dialog = ProgressDialog.show(this, "", "LoadingDialog ASYNC EXECUTOR", true);
-        dialog.show();
-        //endregion
-
-        //Region AsyncExecutor
+    /**
+     * Esta utiliza la sintaxis mas comprimida posible y q será la forma más normal de hacer las llamadas de este tipo
+     */
+    private void LastAsyncExecutorSample() {
+        //region AsyncExecutor
         new AsyncExecutor<ActionASV>().Execute((new ActionASV(15))).MyOwnEvent4RaiseIT = (new Event4Raise() {
             @Override
             public void onEvent(Object ta) {
@@ -84,29 +77,19 @@ public class MainActivity extends ActionBarActivity {
                 Toast.makeText(getApplicationContext(), "onError", Toast.LENGTH_LONG).show();
             }
 
-            @Override
-            public void onPreXeChute(Object tas) {
-                Toast.makeText(getApplicationContext(), "onPreXeChute", Toast.LENGTH_LONG).show();
-            }
+
         });
         //endregion
     }
-    private void AsyncExecutorSample() {
 
 
-    }
 
-    private void Soyunmetodogilipollesquer() {
-        String str = myManager.getMyInvoker();
-        Toast.makeText(this, str, Toast.LENGTH_LONG).show();
-    }
-
+    /**
+     * Este lo hace de la manera mas explicita posible
+     */
     private void BackgroundExecutorSample() {
-/**/
-        //region MOVIDA QUE DEBE ACCEDER AL HILO UI
-        dialog = ProgressDialog.show(this, "", "LoadingDialog", true);
-        dialog.show();
-        //endregion
+
+
 
         //region crear el Ejecutador en 2º plano
         BackgroundExecutor T1000 = new BackgroundExecutor();
