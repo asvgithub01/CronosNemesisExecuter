@@ -33,11 +33,12 @@ public class AsyncTaskObjectModel extends AsyncTask<Void, Void, Object> {
         try {
 
             this.task_status = Enum_Tasks_STATUS.FINITA;
-
+            this.task_stickyReturnValue = result;
+            
             if (this.MyOwnEvent4RaiseIT != null)
                 this.MyOwnEvent4RaiseIT.onEvent(result);
-            else
-                this.task_stickyReturnValue = result;
+
+
 
         } catch (Exception e) {
 
