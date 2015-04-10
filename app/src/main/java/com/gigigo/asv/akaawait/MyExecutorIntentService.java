@@ -25,7 +25,7 @@ public class MyExecutorIntentService extends IntentService {
     private void ManageTasks(Intent intent) {
 
         String Last_Task_Name = intent.getStringExtra("Last_Task_Name");//todo constants
-
+        boolean Is_Task_Sticky = intent.getBooleanExtra("Is_Task_Sticky", false);//todo constants   Is_Task_Sticky
 
         if (!Last_Task_Name.equals("")) {
             AsyncTaskObjectModel myTask = AsyncTaskManagerExecutor.getTaskIfExistInCollection(Last_Task_Name);
@@ -35,7 +35,9 @@ public class MyExecutorIntentService extends IntentService {
 
                 if (myTask.task_status == Enum_Tasks_STATUS.FINITA) {
                     myTask.MyOwnEvent4RaiseIT.onEvent(myTask.task_stickyReturnValue);
-                    AsyncTaskManagerExecutor.RemoveTaskFromCollection(myTask);//asv una vez devuelto el tema lo eliminamos de la coleccion
+
+                    if (!Is_Task_Sticky)
+                        AsyncTaskManagerExecutor.RemoveTaskFromCollection(myTask);//asv una vez devuelto el tema lo eliminamos de la coleccion
 
                 } else {
                     if (myTask.task_status == Enum_Tasks_STATUS.NOT_RUN_YET || myTask.task_status == Enum_Tasks_STATUS.PENDIENTE)

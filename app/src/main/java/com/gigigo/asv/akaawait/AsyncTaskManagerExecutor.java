@@ -21,8 +21,15 @@ public class AsyncTaskManagerExecutor {
         mContext = context;
     }
 
-    public AsyncTaskObjectModel Execute(Action act) {
+    public AsyncTaskObjectModel ExecuteSticky(Action act) {
+        return Execute(act, true);
+    }
 
+    public AsyncTaskObjectModel Execute(Action act) {
+        return Execute(act, false);
+    }
+
+    public AsyncTaskObjectModel Execute(Action act, boolean isSticky) {
         //buscamos en la coleccion  getMyInvoker();, si existe no hacemos nada y llamamos al servicio(es el servicio el que propaga con el fire del onevent)
         //si no existe creamos el new AsyncTaskObjectModel y llamamos al servicio con un intent(y es el servicio el que hace el execute)
 
@@ -34,6 +41,7 @@ public class AsyncTaskManagerExecutor {
         //Intent intent = new Intent(mContext, MyExecutorService.class);
         Intent intent = new Intent(mContext, MyExecutorIntentService.class);
         intent.putExtra("Last_Task_Name", Task_Key_Name);
+        intent.putExtra("Is_Task_Sticky", isSticky);
 
         if (newAsyncTask == null) {
             newAsyncTask = new AsyncTaskObjectModel();
@@ -70,6 +78,9 @@ public class AsyncTaskManagerExecutor {
 
     public static void RemoveTaskFromCollection(AsyncTaskObjectModel Task4Remove) {
         //todo java Garbage collector o similar? o de esta forma ya elimina bien la tarea de memoria?
+        //podemos borrar la tarea rigthHereRigthNOw o no, en plan la dejamos viva durante 5 sg x ejemplo por si
+        //la queremos volver a invocar y se trate de una tarea que no cambie el resultado(una descarga de una imagen o un doc x ejemplo)
+        //pues en vez de borrarla mantenemos su stickyvalue hasta q nos salga del cimbrel y la borremos
         AllTasks.remove(Task4Remove);
     }
 
